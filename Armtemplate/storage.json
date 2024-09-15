@@ -8,11 +8,13 @@
       "allowedValues": [
         "Standard_LRS",
         "Standard_GRS",
+        "Standard_RAGRS",
         "Standard_ZRS",
-        "Premium_LRS"
+        "Premium_LRS",
+        "Premium_ZRS"
       ],
       "metadata": {
-        "description": "Storage Account Type"
+        "description": "Storage Account type"
       }
     },
     "location": {
@@ -21,30 +23,39 @@
       "metadata": {
         "description": "Location for all resources."
       }
+    },
+    "storageAccountName": {
+      "type": "string",
+      "defaultValue": "[concat('storage', uniqueString(resourceGroup().id))]",
+      "metadata": {
+        "description": "Name of the Storage Account"
+      }
     }
   },
-  "variables": {
-    "storageAccountName": "[concat(replace(toLower(resourceGroup().name),'-',''), 'stdsa')]"
-  },
+  "variables": {},
   "resources": [
     {
       "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2019-04-01",
-      "name": "[variables('storageAccountName')]",
+      "apiVersion": "2021-04-01",
+      "name": "[parameters('storageAccountName')]",
       "location": "[parameters('location')]",
       "sku": {
         "name": "[parameters('storageAccountType')]"
       },
       "kind": "StorageV2",
-      "properties": {}
+      "properties": {
+        "accessTier": "Hot"
+      }
     }
   ],
   "outputs": {
     "storageAccountName": {
       "type": "string",
-      "value": "[variables('storageAccountName')]"
+      "value": "[parameters('storageAccountName')]"
+    },
+    "storageAccountResourceId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
     }
   }
 }
-    }
-  }
