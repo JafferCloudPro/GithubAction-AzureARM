@@ -3,9 +3,11 @@ on: [push]
 name: AzureARMDeploy
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
+
+    deploy:
+      runs-on: ubuntu-latest
+      steps:
+
       - name: Login to Azure
         uses: azure/login@v1
         with:
@@ -19,6 +21,7 @@ jobs:
         with:
           inlineScript: |
             az deployment group create \
-            --resource-group Github-RG \
-            --template-file Armtemplate/storage.json \
+            --name StorageAccountDeployment \
+            --resource-group savdevgithubdeploy \
+            --template-file armtemplates/storageaccount.json \
             --parameters storageAccountType=Standard_GRS
